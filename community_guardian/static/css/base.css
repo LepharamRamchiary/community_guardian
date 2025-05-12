@@ -1,0 +1,103 @@
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f9fafb;
+}
+
+/* Gradient and Hero Background */
+.custom-gradient {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+}
+
+.hero-bg {
+  background-image: linear-gradient(
+      rgba(106, 17, 203, 0.8),
+      rgba(37, 117, 252, 0.8)
+    ),
+    url("/api/placeholder/1920/1080");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeInUp-1 {
+  animation: fadeInUp 1s ease-out forwards;
+  opacity: 0;
+}
+.animate-fadeInUp-2 {
+  animation: fadeInUp 2s ease-out forwards;
+  opacity: 0;
+}
+.animate-fadeInUp-3 {
+  animation: fadeInUp 3s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scaleIn-1 {
+  animation: scaleIn 1s ease-out forwards;
+  opacity: 0;
+}
+.animate-scaleIn-2 {
+  animation: scaleIn 2s ease-out forwards;
+  opacity: 0;
+}
+.animate-scaleIn-3 {
+  animation: scaleIn 3s ease-out forwards;
+  opacity: 0;
+}
+
+/* Feature Card Hover Effect */
+.feature-card {
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.feature-card:hover {
+  transform: scale(1.05) translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Menu */
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none;
+  }
+  .mobile-menu {
+    display: block;
+  }
+}
+
+/* Smooth Scroll and Active States */
+html {
+  scroll-behavior: smooth;
+}
+
+.active-link {
+  color: #6a11cb;
+  font-weight: 600;
+}

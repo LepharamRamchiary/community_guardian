@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Guardian - Public Service Issue Tracker</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/base.css'%}" />
+  </head>
+  <body class="antialiased text-gray-900">
+    <!-- Accessibility: Skip to Main Content Link -->
+    <a
+      href="#main-content"
+      class="absolute left-0 top-0 bg-white text-purple-600 p-2 z-50 transform -translate-x-full focus:translate-x-0"
+    >
+      Skip to Main Content
+    </a>
+
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 left-0 w-full bg-white shadow-md z-50"
+      aria-label="Main Navigation"
+    >
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <!-- Logo -->
+        <div class="flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-8 w-8 text-purple-600 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span class="text-xl font-bold text-purple-800"
+            >Community Guardian</span
+          >
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="desktop-menu flex items-center space-x-6">
+          <a href="#home" class="hover:text-purple-600 transition duration-300"
+            >Home</a
+          >
+          <a
+            href="#features"
+            class="hover:text-purple-600 transition duration-300"
+            >Features</a
+          >
+          <a
+            href="#how-it-works"
+            class="hover:text-purple-600 transition duration-300"
+            >How It Works</a
+          >
+          <a
+            href="#contact"
+            class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition duration-300"
+          >
+            Report an Issue
+          </a>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <div class="mobile-menu">
+          <button
+            id="mobile-menu-toggle"
+            class="focus:outline-none"
+            aria-label="Toggle Mobile Menu"
+            aria-expanded="false"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Dropdown Menu -->
+      <div
+        id="mobile-menu"
+        class="mobile-menu hidden bg-white absolute w-full shadow-lg"
+        aria-label="Mobile Navigation"
+      >
+        <div class="px-4 pt-2 pb-4 space-y-2">
+          <a href="#home" class="block py-2 hover:bg-purple-50 rounded">Home</a>
+          <a href="#features" class="block py-2 hover:bg-purple-50 rounded"
+            >Features</a
+          >
+          <a href="#how-it-works" class="block py-2 hover:bg-purple-50 rounded"
+            >How It Works</a
+          >
+          <a
+            href="#contact"
+            class="block bg-purple-600 text-white text-center py-2 rounded-full"
+          >
+            Report an Issue
+          </a>
+        </div>
+      </div>
+    </nav>
+    {% block content %}{% endblock %}
+
+    <footer class="bg-gray-800 text-white py-8">
+      <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2025 Community Guardian. All rights reserved.</p>
+        <div class="mt-4 space-x-4">
+          <a href="#" class="hover:text-purple-300">Privacy Policy</a>
+          <a href="#" class="hover:text-purple-300">Terms of Service</a>
+          <a href="#" class="hover:text-purple-300">Contact Us</a>
+        </div>
+      </div>
+    </footer>
+
+        <!-- Mobile Menu JavaScript -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        mobileMenuToggle.addEventListener("click", () => {
+          const isExpanded =
+            mobileMenuToggle.getAttribute("aria-expanded") === "true";
+          mobileMenuToggle.setAttribute("aria-expanded", !isExpanded);
+          mobileMenu.classList.toggle("hidden");
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener("click", (event) => {
+          const isClickInsideMenu = mobileMenu.contains(event.target);
+          const isClickOnToggle = mobileMenuToggle.contains(event.target);
+
+          if (!isClickInsideMenu && !isClickOnToggle) {
+            mobileMenu.classList.add("hidden");
+            mobileMenuToggle.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
