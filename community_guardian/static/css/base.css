@@ -1,3 +1,4 @@
+/* Base styles */
 body {
   font-family: "Inter", sans-serif;
   background-color: #f9fafb;
@@ -83,6 +84,10 @@ body {
   display: none;
 }
 
+#mobile-menu {
+  display: none; /* Hidden by default */
+}
+
 @media (max-width: 768px) {
   .desktop-menu {
     display: none;
@@ -90,9 +95,15 @@ body {
   .mobile-menu {
     display: block;
   }
+  #mobile-menu {
+    display: block;
+  }
 }
 
-/* Smooth Scroll and Active States */
+.hidden {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }

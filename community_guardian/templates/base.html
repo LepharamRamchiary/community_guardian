@@ -70,13 +70,12 @@
             >How It Works</a
           >
           <a
-            href="#contact"
+            href="{%url 'login'%}"
             class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition duration-300"
           >
             Report an Issue
           </a>
         </div>
-
         <!-- Mobile Menu Toggle -->
         <div class="mobile-menu">
           <button
@@ -85,7 +84,9 @@
             aria-label="Toggle Mobile Menu"
             aria-expanded="false"
           >
+            <!-- Open Icon -->
             <svg
+              id="menu-open-icon"
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"
               fill="none"
@@ -100,6 +101,24 @@
                 d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
+
+            <!-- Close Icon -->
+            <svg
+              id="menu-close-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 hidden"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </button>
         </div>
       </div>
@@ -110,16 +129,16 @@
         class="mobile-menu hidden bg-white absolute w-full shadow-lg"
         aria-label="Mobile Navigation"
       >
-        <div class="px-4 pt-2 pb-4 space-y-2">
-          <a href="#home" class="block py-2 hover:bg-purple-50 rounded">Home</a>
-          <a href="#features" class="block py-2 hover:bg-purple-50 rounded"
+        <div class="px-4 pt-2 pb-4 space-y-2 ">
+          <a href="#home" class="block py-2 text-center hover:bg-purple-50 rounded">Home</a>
+          <a href="#features" class="block py-2 text-center hover:bg-purple-50 rounded"
             >Features</a
           >
-          <a href="#how-it-works" class="block py-2 hover:bg-purple-50 rounded"
+          <a href="#how-it-works" class="block py-2 text-center hover:bg-purple-50 rounded"
             >How It Works</a
           >
           <a
-            href="#contact"
+            href="{%url 'login'%}"
             class="block bg-purple-600 text-white text-center py-2 rounded-full"
           >
             Report an Issue
@@ -140,17 +159,27 @@
       </div>
     </footer>
 
-        <!-- Mobile Menu JavaScript -->
+    <!-- Mobile Menu JavaScript -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
         const mobileMenu = document.getElementById("mobile-menu");
+        const menuOpenIcon = document.getElementById("menu-open-icon");
+        const menuCloseIcon = document.getElementById("menu-close-icon");
 
+        // Toggle menu visibility
         mobileMenuToggle.addEventListener("click", () => {
           const isExpanded =
             mobileMenuToggle.getAttribute("aria-expanded") === "true";
+
+          // Toggle menu visibility
           mobileMenuToggle.setAttribute("aria-expanded", !isExpanded);
           mobileMenu.classList.toggle("hidden");
+          mobileMenu.classList.toggle("block");
+
+          // Toggle icons
+          menuOpenIcon.classList.toggle("hidden");
+          menuCloseIcon.classList.toggle("hidden");
         });
 
         // Close mobile menu when clicking outside
@@ -160,7 +189,12 @@
 
           if (!isClickInsideMenu && !isClickOnToggle) {
             mobileMenu.classList.add("hidden");
+            mobileMenu.classList.remove("block");
             mobileMenuToggle.setAttribute("aria-expanded", "false");
+
+            // Reset icons
+            menuOpenIcon.classList.remove("hidden");
+            menuCloseIcon.classList.add("hidden");
           }
         });
 
@@ -171,6 +205,17 @@
             document.querySelector(this.getAttribute("href")).scrollIntoView({
               behavior: "smooth",
             });
+
+            // Close the menu after clicking a link
+            if (window.innerWidth < 768) {
+              mobileMenu.classList.add("hidden");
+              mobileMenu.classList.remove("block");
+              mobileMenuToggle.setAttribute("aria-expanded", "false");
+
+              // Reset icons
+              menuOpenIcon.classList.remove("hidden");
+              menuCloseIcon.classList.add("hidden");
+            }
           });
         });
       });

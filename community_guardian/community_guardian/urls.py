@@ -24,4 +24,7 @@ urlpatterns = [
 
     #Hot reloading
     path("__reload__/", include("django_browser_reload.urls")),
+
+    #url controll sent to app
+    path('accounts/', include('accounts.urls')),
 ]
