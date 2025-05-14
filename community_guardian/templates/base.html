@@ -26,6 +26,7 @@
       Skip to Main Content
     </a>
 
+    {% block nav %}
     <!-- Navigation -->
     <nav
       class="fixed top-0 left-0 w-full bg-white shadow-md z-50"
@@ -176,6 +177,9 @@
         </div>
       </div>
     </nav>
+    {% endblock %}
+
+    
     {% block content %}{% endblock %}
 
     <footer class="bg-gray-800 text-white py-8">

@@ -6,6 +6,7 @@ class Issue(models.Model):
         ('Pending', 'Pending'),
         ('Processing', 'Processing'),
         ('Resolved', 'Resolved'),
+        ('Rejected', 'Rejected')
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
