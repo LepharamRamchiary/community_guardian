@@ -27,3 +27,7 @@ def my_issue(request):
 def all_issues_public(request):
     issues = Issue.objects.select_related('user').order_by('-created_at')
     return render(request, 'issue/all_issues_public.html', {'issues': issues})
+
+@login_required
+def dashboard(request):
+    return render(request, 'dashboard/dashboard.html')
