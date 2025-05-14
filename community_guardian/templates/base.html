@@ -4,7 +4,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Community Guardian - Public Service Issue Tracker</title>
+    {% comment %} <title></title> {% endcomment %}
+    {% block title %}Community Guardian - Public Service Issue Tracker{% endblock %}
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
       rel="stylesheet"
@@ -14,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{% static 'css/base.css'%}" />
+    {% block style %}{% endblock %}
   </head>
   <body class="antialiased text-gray-900">
     <!-- Accessibility: Skip to Main Content Link -->
@@ -69,12 +71,32 @@
             class="hover:text-purple-600 transition duration-300"
             >How It Works</a
           >
+          
+          {% if user.is_authenticated %}
+          <!-- User is logged in - show username with dropdown -->
+          <div class="relative" id="user-dropdown-container">
+            <button id="user-dropdown-toggle" class="flex items-center text-purple-600 hover:text-purple-800 transition duration-300">
+              <span>{{ user.username }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-20 bg-white rounded-md shadow-lg hidden z-50">
+              <div class="py-1">
+                <a href="{% url 'logout' %}" class="block px-4 py-2 text-center text-gray-800 hover:bg-purple-100">Logout</a>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <!-- User is not logged in - show login button -->
           <a
-            href="{%url 'login'%}"
+            href="{% url 'login' %}"
             class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition duration-300"
           >
             Report an Issue
           </a>
+          {% endif %}
         </div>
         <!-- Mobile Menu Toggle -->
         <div class="mobile-menu">
@@ -137,12 +159,20 @@
           <a href="#how-it-works" class="block py-2 text-center hover:bg-purple-50 rounded"
             >How It Works</a
           >
+          
+          {% if user.is_authenticated %}
+          <!-- User is logged in - show username and logout option -->
+          <div class="py-2 text-center text-purple-600">{{ user.username }}</div>
+          <a href="{% url 'logout' %}" class="block py-2 text-center hover:bg-purple-50 rounded">Logout</a>
+          {% else %}
+          <!-- User is not logged in - show login button -->
           <a
-            href="{%url 'login'%}"
+            href="{% url 'login' %}"
             class="block bg-purple-600 text-white text-center py-2 rounded-full"
           >
             Report an Issue
           </a>
+          {% endif %}
         </div>
       </div>
     </nav>
@@ -197,6 +227,26 @@
             menuCloseIcon.classList.add("hidden");
           }
         });
+
+        // User dropdown functionality - click only, no hover
+        const userDropdownToggle = document.getElementById("user-dropdown-toggle");
+        const userDropdownMenu = document.getElementById("user-dropdown-menu");
+        const userDropdownContainer = document.getElementById("user-dropdown-container");
+        
+        if (userDropdownToggle) {
+          // Toggle dropdown on click
+          userDropdownToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            userDropdownMenu.classList.toggle("hidden");
+          });
+          
+          // Close dropdown when clicking outside
+          document.addEventListener("click", (event) => {
+            if (!userDropdownContainer.contains(event.target)) {
+              userDropdownMenu.classList.add("hidden");
+            }
+          });
+        }
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach((anchor) => {

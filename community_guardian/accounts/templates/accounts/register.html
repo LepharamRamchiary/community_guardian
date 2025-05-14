@@ -1,104 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-    <div
-      class="bg-white shadow-md rounded px-4 sm:px-6 py-6 w-full max-w-md mx-auto"
-    >
-      <h2
-        class="text-xl sm:text-2xl font-bold text-center text-purple-800 mb-4 sm:mb-6"
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+{% block style %}
+<style>
+  /* Additional custom styles for mobile responsiveness */
+  @media (max-width: 640px) {
+    .register-container {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+  }
+  
+  /* Message popup animation */
+  .popup-animation {
+    animation: fadeInOut 3s ease-in-out;
+  }
+  
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="main-content" class="min-h-screen flex items-center justify-center px-4 py-20">
+  <div class="bg-white shadow-md rounded px-4 sm:px-8 py-6 w-full max-w-md mx-auto">
+    <h2 class="text-xl sm:text-2xl font-bold text-center text-purple-800 mb-4 sm:mb-6">
+      Register
+    </h2>
+    
+    {% if form.errors %}
+    <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+      <p class="font-medium">Please correct the following errors:</p>
+      <ul class="list-disc pl-5 mt-1">
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li>{{ field.label }}: {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    
+    <form method="POST" class="space-y-3 sm:space-y-4">
+      {% csrf_token %}
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          class="mt-1 border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+          placeholder="Enter your username"
+          required
+        />
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="mt-1 border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="mt-1 border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+          placeholder="Enter your password"
+          required
+        />
+        <p class="text-xs text-gray-500 mt-1">Password must be at least 8 characters long</p>
+      </div>
+      <div>
+        <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+        <input
+          type="password"
+          id="confirm_password"
+          name="confirm_password"
+          class="mt-1 border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+          placeholder="Confirm your password"
+          required
+        />
+      </div>
+      <div class="flex items-start mt-4">
+        <input id="terms" name="terms" type="checkbox" class="h-4 w-4 mt-1 text-purple-600 focus:ring-purple-500 border-gray-300 rounded" required>
+        <label for="terms" class="ml-2 block text-sm text-gray-700">
+          I agree to the <a href="#" class="text-purple-600 hover:underline">Terms of Service</a> and <a href="#" class="text-purple-600 hover:underline">Privacy Policy</a>
+        </label>
+      </div>
+      <button
+        type="submit"
+        class="w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition duration-300 mt-4"
       >
         Register
-      </h2>
-      <form method="POST" class="space-y-3 sm:space-y-4">
-        {% csrf_token %}
-        <div>
-          <label for="username" class="block text-sm font-medium text-gray-700"
-            >Username</label
-          >
-          <input
-            type="text"
-            id="username"
-            name="username"
-            class="mt-1 border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
-            placeholder="Enter your username"
-          />
-        </div>
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700"
-            >Email</label
-          >
-          <input
-            type="email"
-            id="email"
-            name="email"
-            class="mt-1 border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
-            placeholder="Enter your email"
-          />
-        </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700"
-            >Password</label
-          >
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="mt-1 border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
-            placeholder="Enter your password"
-          />
-        </div>
-        <div>
-          <label
-            for="confirm_password"
-            class="block text-sm font-medium text-gray-700"
-            >Confirm Password</label
-          >
-          <input
-            type="password"
-            id="confirm_password"
-            name="confirm_password"
-            class="mt-1 border border-gray-300 rounded w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
-            placeholder="Confirm your password"
-          />
-        </div>
-        <button
-          type="submit"
-          class="w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition duration-300 mt-2 sm:mt-3"
-        >
-          Register
-        </button>
-      </form>
-      <p class="text-center text-sm text-gray-600 mt-4">
-        Already have an account?
-        <a href="{% url 'login' %}" class="text-purple-600 hover:underline">
-          Login
-        </a>
-      </p>
-    </div>
+      </button>
+    </form>
+    <p class="text-center text-sm text-gray-600 mt-6">
+      Already have an account?
+      <a href="{% url 'login' %}" class="text-purple-600 hover:underline">
+        Login
+      </a>
+    </p>
+  </div>
+</div>
 
-    {% if messages %}
-    <div
-      id="popup-message"
-      class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg"
-    >
-      {% for message in messages %} {{ message }} {% endfor %}
-    </div>
-    <script>
-      setTimeout(() => {
-        window.location.href = "{% url 'login' %}";
-      }, 3000);
-    </script>
-    {% endif %}
-
-    
-  </body>
-</html>
+{% if messages %}
+<div
+  id="popup-message"
+  class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50 popup-animation"
+>
+  {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+</div>
+<script>
+  // Better message handling with fade animation
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const popup = document.getElementById('popup-message');
+      if (popup) {
+        popup.style.opacity = '0';
+        popup.style.transform = 'translateY(-20px)';
+        popup.style.transition = 'opacity 0.5s, transform 0.5s';
+        
+        setTimeout(() => {
+          window.location.href = "{% url 'login' %}";
+        }, 500);
+      }
+    }, 2500);
+  });
+</script>
+{% endif %}
+{% endblock %}
