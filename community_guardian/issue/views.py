@@ -1,7 +1,29 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from .models import Issue
+from .forms import IssueForm
 
 # Create your views here.
 @login_required
 def report_issue(request):
-    return render(request, 'issue/report_issue.html')
+    if request.method == 'POST':
+        form = IssueForm(request.POST, request.FILES)
+        if form.is_valid():
+            issue = form.save(commit=False)
+            issue.user = request.user
+            issue.save()
+            return redirect('my_issue')
+    else:
+        form = IssueForm()
+    return render(request, 'issue/report_issue.html', {'form': form})
+
+@login_required
+def my_issue(request):
+    issues = Issue.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'issue/my_issues.html', {'issues': issues})
+
+
+@login_required
+def all_issues_public(request):
+    issues = Issue.objects.select_related('user').order_by('-created_at')
+    return render(request, 'issue/all_issues_public.html', {'issues': issues})
