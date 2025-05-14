@@ -27,4 +27,5 @@ urlpatterns = [
 
     #url controll sent to app
     path('accounts/', include('accounts.urls')),
+    path('issue/', include('issue.urls'))
 ]

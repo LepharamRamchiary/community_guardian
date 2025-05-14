@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     #app
     'accounts',
+    'issue',
 ]
 
 MIDDLEWARE = [
