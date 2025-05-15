@@ -25,6 +25,7 @@
       </label>
       
       {% if field.field.widget.input_type == 'file' %}
+        <!-- File upload widget -->
         <div class="w-full max-w-lg mx-auto px-4 sm:px-6 lg:px-8">
           <div class="mt-1 flex justify-center px-2 sm:px-4 py-6 border-2 border-gray-300 border-dashed rounded-md">
             <div class="space-y-2 text-center w-full max-w-md">
@@ -44,16 +45,21 @@
           </div>
         </div>
       {% elif field.field.widget.input_type == 'textarea' %}
+        <!-- Textarea widget -->
         <div class="mt-1">
           <textarea id="{{ field.id_for_label }}" name="{{ field.html_name }}" rows="4" class="shadow-sm focus:ring-purple-500 focus:border-purple-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2" placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">{{ field.value|default:'' }}</textarea>
         </div>
-      {% elif field.field.widget.input_type == 'select' %}
+      {% elif field.name == 'category' %}
+        <!-- Dropdown for category field -->
         <div class="mt-1">
           <select id="{{ field.id_for_label }}" name="{{ field.html_name }}" class="shadow-sm focus:ring-purple-500 focus:border-purple-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2">
-            {{ field }}
+            {% for choice_id, choice_label in field.field.choices %}
+              <option value="{{ choice_id }}" {% if field.value == choice_id %}selected{% endif %}>{{ choice_label }}</option>
+            {% endfor %}
           </select>
         </div>
       {% else %}
+        <!-- Default input field -->
         <div class="mt-1">
           <input type="{{ field.field.widget.input_type|default:'text' }}" id="{{ field.id_for_label }}" name="{{ field.html_name }}" value="{{ field.value|default:'' }}" class="shadow-sm focus:ring-purple-500 focus:border-purple-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2" placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">
         </div>
