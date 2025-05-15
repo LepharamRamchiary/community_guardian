@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.db.models import Q
 from .models import Issue
 from .forms import IssueForm
 
@@ -31,11 +32,39 @@ def my_issue(request):
 
 @login_required
 def all_issues_public(request):
+    # Get filter parameters from request
+    category = request.GET.get('category', '')
+    status = request.GET.get('status', '')
+    search = request.GET.get('search', '')
+    
+    # Start with all issues
     issues = Issue.objects.select_related('user').order_by('-created_at')
+    
+    # Apply filters if they exist
+    if category:
+        issues = issues.filter(category=category)
+    
+    if status:
+        issues = issues.filter(status=status)
+    
+    if search:
+        issues = issues.filter(Q(title__icontains=search))
+    
+    # Paginate the filtered results
     paginator = Paginator(issues, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'issue/all_issues_public.html',  {'page_obj': page_obj})
+    
+    # Create context with page object and model choices
+    context = {
+        'page_obj': page_obj,
+        'STATUS_CHOICES': Issue.STATUS_CHOICES,
+        'CATEGORY_CHOICES': Issue.CATEGORY_CHOICES,
+    }
+    
+    # Pass the context to the template
+    return render(request, 'issue/all_issues_public.html', context)
+    
 
 @login_required
 def dashboard(request):

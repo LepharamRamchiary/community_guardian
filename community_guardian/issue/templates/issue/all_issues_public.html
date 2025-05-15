@@ -12,36 +12,50 @@
     </div>
     
     <!-- Filter/Search Controls -->
-    <div class="flex flex-wrap gap-2">
+    <form action="." method="get" class="flex flex-wrap gap-2">
       <div class="relative">
-        <select id="category-filter" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+        <select id="category-filter" name="category" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
           <option value="">All Categories</option>
-          <option value="infrastructure">Infrastructure</option>
-          <option value="safety">Safety</option>
-          <option value="environment">Environment</option>
-          <option value="other">Other</option>
+          {% for value, text in CATEGORY_CHOICES %}
+            {% if value != 'select_category' %}
+              <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>{{ text }}</option>
+            {% endif %}
+          {% endfor %}
         </select>
       </div>
       
       <div class="relative">
-        <select id="status-filter" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+        <select id="status-filter" name="status" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
           <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="in_progress">In Progress</option>
-          <option value="resolved">Resolved</option>
-          <option value="rejected">Rejected</option>
+          {% for value, text in STATUS_CHOICES %}
+            <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ text }}</option>
+          {% endfor %}
         </select>
       </div>
       
-      <div class="relative rounded-md shadow-sm">
-        <input type="text" id="search-issues" class="focus:ring-purple-500 focus:border-purple-500 block w-full pr-10 sm:text-sm border-gray-300 rounded-md" placeholder="Search issues...">
-        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+      <div class="relative w-full sm:flex-1 min-w-[180px]">
+        <input
+          type="text"
+          id="search-issues"
+          name="search"
+          value="{{ request.GET.search|default:'' }}"
+          class="focus:ring-purple-500 focus:border-purple-500 block w-full pl-10 pr-4 py-2 sm:text-sm border border-gray-300 rounded-md"
+          placeholder="Search by title or description..."
+        >
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
-      </div>
-    </div>
+     </div>
+      <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+        Filter
+      </button>
+      
+      <a href="." class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+        Reset
+      </a>
+    </form>
   </div>
   
   {% if page_obj %}
@@ -68,7 +82,7 @@
                     <span class="px-2 py-1 text-xs font-medium rounded-full 
                       {% if issue.status == 'Pending' %}
                         bg-yellow-100 text-yellow-800
-                      {% elif issue.status == 'Progress' %}
+                      {% elif issue.status == 'Processing' %}
                         bg-blue-100 text-blue-800
                       {% elif issue.status == 'Resolved' %}
                         bg-green-100 text-green-800
@@ -81,7 +95,7 @@
                     </span>
                     
                     <span class="px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
-                      {{ issue.category }}
+                      {{ issue.get_category_display }}
                     </span>
                   </div>
                 </div>
@@ -153,7 +167,7 @@
       {% endfor %}
     </div>
     
-    <!-- Pagination Controls - Unified and Improved -->
+    <!-- Pagination Controls -->
     <div class="mt-8">
       <div class="flex items-center justify-between ">    
         <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
@@ -218,8 +232,14 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
         </svg>
       </div>
-      <h3 class="text-xl font-medium text-gray-700 mb-2">No Issues Reported Yet</h3>
-      <p class="text-gray-500 max-w-md mb-6">There are currently no community issues in the system. Check back later or be the first to report an issue.</p>
+      <h3 class="text-xl font-medium text-gray-700 mb-2">No Issues Found</h3>
+      <p class="text-gray-500 max-w-md mb-6">
+        {% if request.GET.search or request.GET.category or request.GET.status %}
+          No issues match your filter criteria. Try adjusting your filters or <a href="." class="text-purple-600 hover:text-purple-800">reset all filters</a>.
+        {% else %}
+          There are currently no community issues in the system. Check back later or be the first to report an issue.
+        {% endif %}
+      </p>
       <a href="{% url 'report_issue' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -229,49 +249,4 @@
     </div>
   {% endif %}
 </div>
-
-<!-- JavaScript for filtering -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const categoryFilter = document.getElementById('category-filter');
-    const statusFilter = document.getElementById('status-filter');
-    const searchInput = document.getElementById('search-issues');
-    
-    function applyFilters() {
-      const category = categoryFilter.value;
-      const status = statusFilter.value;
-      const search = searchInput.value.trim();
-      
-      let url = window.location.pathname;
-      const params = [];
-      
-      if (category) params.push(`category=${encodeURIComponent(category)}`);
-      if (status) params.push(`status=${encodeURIComponent(status)}`);
-      if (search) params.push(`search=${encodeURIComponent(search)}`);
-      
-      if (params.length > 0) {
-        url += '?' + params.join('&');
-      }
-      
-      window.location.href = url;
-    }
-    
-    // Apply filters on change
-    categoryFilter.addEventListener('change', applyFilters);
-    statusFilter.addEventListener('change', applyFilters);
-    
-    // Apply search on Enter key
-    searchInput.addEventListener('keyup', function(event) {
-      if (event.key === 'Enter') {
-        applyFilters();
-      }
-    });
-    
-    // Pre-select current filters from URL params
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('category')) categoryFilter.value = urlParams.get('category');
-    if (urlParams.has('status')) statusFilter.value = urlParams.get('status');
-    if (urlParams.has('search')) searchInput.value = urlParams.get('search');
-  });
-</script>
 {% endblock %}
