@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Issue
 from .forms import IssueForm
 
@@ -12,7 +13,8 @@ def report_issue(request):
             issue = form.save(commit=False)
             issue.user = request.user
             issue.save()
-            return redirect('my_issue')
+            messages.success(request, "Issue created successfully!")
+            return redirect('report_issue')
     else:
         form = IssueForm()
     return render(request, 'issue/report_issue.html', {'form': form})

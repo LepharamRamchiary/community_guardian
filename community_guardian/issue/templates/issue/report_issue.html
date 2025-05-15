@@ -25,18 +25,22 @@
       </label>
       
       {% if field.field.widget.input_type == 'file' %}
-        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-          <div class="space-y-1 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <div class="flex text-sm text-gray-600">
-              <label for="{{ field.id_for_label }}" class="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none">
-                <span>Upload a file</span>
-                {{ field }}
-              </label>
+        <div class="w-full max-w-lg mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="mt-1 flex justify-center px-2 sm:px-4 py-6 border-2 border-gray-300 border-dashed rounded-md">
+            <div class="space-y-2 text-center w-full max-w-md">
+              <svg class="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div class="flex justify-center text-sm sm:text-base text-gray-600 w-full">
+                <label for="{{ field.id_for_label }}" class="flex flex-col relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none w-full">
+                  <span class="mb-1">Upload a file</span>
+                  <div class="w-full overflow-hidden px-2 sm:px-4">
+                    <span class="text-center block w-full">{{field}}</span>
+                  </div>
+                </label>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-400 mt-2">PNG, JPG, GIF up to 10MB</p>
             </div>
-            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
           </div>
         </div>
       {% elif field.field.widget.input_type == 'textarea' %}
@@ -79,4 +83,31 @@
     </div>
   </form>
 </div>
+{% if messages %}
+<div
+  id="popup-message"
+  class="fixed top-14 right-14 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50 popup-animation"
+>
+  {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+</div>
+<script>
+  // Better message handling with fade animation
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const popup = document.getElementById('popup-message');
+      if (popup) {
+        popup.style.opacity = '0';
+        popup.style.transform = 'translateY(-20px)';
+        popup.style.transition = 'opacity 0.5s, transform 0.5s';
+        
+        setTimeout(() => {
+          window.location.href = "{% url 'my_issue' %}";
+        }, 500);
+      }
+    }, 2500);
+  });
+</script>
+{% endif %}
 {% endblock %}
