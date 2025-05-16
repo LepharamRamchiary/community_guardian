@@ -1,5 +1,6 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
+{% block style %}<script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>{% endblock %}
 
 {% block dashboard_content %}
 <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
@@ -85,7 +86,7 @@
                 </svg>
                 Description
               </div>
-              <p class="text-gray-700 text-xs line-clamp-3">{{ issue.description }}</p>
+              <p class="text-gray-700 text-xs line-clamp-1">{{ issue.description }}</p>
             </div>
             
             {% if issue.image %}
