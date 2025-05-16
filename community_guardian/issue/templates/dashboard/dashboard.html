@@ -107,31 +107,45 @@
               </a>
             </div>
              <!-- Breadcrumbs -->
-              <nav class="mt-1 text-xs text-gray-500" aria-label="Breadcrumb">
-                <ol class="list-reset flex space-x-2">
-                  <li>
-                    <a href="{% url 'dashboard' %}" class="hover:underline ml-10 {% if request.resolver_match.url_name == 'dashboard' %}text-gray-600{% else %}text-purple-700{% endif %}">Dashboard</a>
-                  </li>
-                  {% if request.resolver_match.url_name == 'report_issue' %}
-                    <li><span>&gt;</span></li>
-                    <li class="text-gray-600">Report Issue</li>
-                  {% elif request.resolver_match.url_name == 'my_issue' %}
-                    <li><span>&gt;</span></li>
-                    <li class="text-gray-600">My Issues</li>
-                  {% elif request.resolver_match.url_name == 'all_issues_public' %}
-                    <li><span>&gt;</span></li>
-                    <li class="text-gray-600">All Issues</li>
-                  {% elif request.resolver_match.url_name == 'issue_detail' %}
-                    <li><span>&gt;</span></li>
-                    {% if from_my_issues %}
-                      <li><a href="{% url 'my_issue' %}" class="hover:underline text-purple-700">My Issues</a></li>
-                    {% else %}
-                      <li><a href="{% url 'all_issues_public' %}" class="hover:underline text-purple-700">All Issues</a></li>
-                    {% endif %}
-                    <li><span>&gt;</span></li>
-                    <li class="text-gray-600">Issue Details</li>
+            <nav class="mt-1 text-xs text-gray-500" aria-label="Breadcrumb">
+              <ol class="list-reset flex space-x-2">
+                <li>
+                  <a href="{% url 'dashboard' %}" class="hover:underline ml-10 {% if request.resolver_match.url_name == 'dashboard' %}text-gray-600{% else %}text-purple-700{% endif %}">Dashboard</a>
+                </li>
+                {% if request.resolver_match.url_name == 'report_issue' %}
+                  <li><span>&gt;</span></li>
+                  <li class="text-gray-600">Report Issue</li>
+                {% elif request.resolver_match.url_name == 'my_issue' %}
+                  <li><span>&gt;</span></li>
+                  <li class="text-gray-600">My Issues</li>
+                {% elif request.resolver_match.url_name == 'all_issues_public' %}
+                  <li><span>&gt;</span></li>
+                  <li class="text-gray-600">All Issues</li>
+                {% elif request.resolver_match.url_name == 'issue_detail' %}
+                  <li><span>&gt;</span></li>
+                  {% if from_my_issues %}
+                    <li><a href="{% url 'my_issue' %}" class="hover:underline text-purple-700">My Issues</a></li>
+                  {% else %}
+                    <li><a href="{% url 'all_issues_public' %}" class="hover:underline text-purple-700">All Issues</a></li>
                   {% endif %}
-                </ol>
+                  <li><span>&gt;</span></li>
+                  <li class="text-gray-600">Issue Details</li>
+                {% elif request.resolver_match.url_name == 'edit_issue' %}
+                  <li><span>&gt;</span></li>
+                  <li><a href="{% url 'my_issue' %}" class="hover:underline text-purple-700">My Issues</a></li>
+                  <li><span>&gt;</span></li>
+                  <li><a href="{% url 'issue_detail' issue.id %}?source=my_issue" class="hover:underline text-purple-700">Issue Details</a></li>
+                  <li><span>&gt;</span></li>
+                  <li class="text-gray-600">Edit Issue</li>
+                {% elif request.resolver_match.url_name == 'delete_issue' %}
+                  <li><span>&gt;</span></li>
+                  <li><a href="{% url 'my_issue' %}" class="hover:underline text-purple-700">My Issues</a></li>
+                  <li><span>&gt;</span></li>
+                  <li><a href="{% url 'issue_detail' issue.id %}?source=my_issue" class="hover:underline text-purple-700">Issue Details</a></li>
+                  <li><span>&gt;</span></li>
+                  <li class="text-gray-600">Delete Issue</li>
+                {% endif %}
+              </ol>
             </nav>
           </div>
           
