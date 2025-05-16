@@ -3,9 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseForbidden
 from django.db.models import Q
 from .models import Issue
 from .forms import IssueForm
+from django.urls import reverse
 
 # Create your views here.
 @login_required
@@ -82,3 +84,41 @@ def issue_detail(request, issue_id):
         # Other context variables
     }
     return render(request, 'details_issue/details_issue.html', context)
+
+@login_required
+def edit_issue(request, issue_id):
+    # Get the issue or return 404
+    issue = get_object_or_404(Issue, id=issue_id)
+    
+    # Check if the current user is the owner of the issue
+    if issue.user != request.user:
+        return HttpResponseForbidden("You don't have permission to edit this issue.")
+    
+    if request.method == 'POST':
+        form = IssueForm(request.POST, request.FILES, instance=issue)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Issue updated successfully!")
+            
+            # Redirect to the issue detail page with source parameter
+            # return redirect(f"{reverse('issue_detail', args=[issue_id])}?source=my_issue")
+    else:
+        form = IssueForm(instance=issue)
+    
+    return render(request, 'issue/edit_issue.html', {'form': form, 'issue': issue})
+
+@login_required
+def delete_issue(request, issue_id):
+    # Get the issue or return 404
+    issue = get_object_or_404(Issue, id=issue_id)
+    
+    # Check if the current user is the owner of the issue
+    if issue.user != request.user:
+        return HttpResponseForbidden("You don't have permission to delete this issue.")
+    
+    if request.method == 'POST':
+        issue.delete()
+        messages.success(request, "Issue deleted successfully!")
+        return redirect('my_issue')
+    
+    return render(request, 'issue/delete_confirmation.html', {'issue': issue})

@@ -161,5 +161,30 @@
     </nav>
   </div>
   {% endif %}
+
+  {% if messages %}
+    <div
+      id="popup-message"
+      class="fixed top-14 right-14 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50 popup-animation"
+    >
+      {% for message in messages %}
+        {{ message }}
+      {% endfor %}
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          var popup = document.getElementById('popup-message');
+          if (popup) {
+            popup.style.opacity = '0';
+            popup.style.transition = 'opacity 0.5s';
+            setTimeout(function() {
+              popup.style.display = 'none';
+            }, 500);
+          }
+        }, 3000);
+      });
+    </script>
+{% endif%}
 </div>
 {% endblock %}
