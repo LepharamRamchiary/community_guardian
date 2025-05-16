@@ -171,4 +171,80 @@
   });
 </script>
 {% endif %}
+
+<!-- Form validation script - begins here -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    // Create a deep copy of initial form state
+    const initialState = {};
+    
+    // Collect initial values for all form elements (except csrf token)
+    Array.from(form.elements).forEach(element => {
+      if (element.name && element.name !== 'csrfmiddlewaretoken') {
+        if (element.type === 'file') {
+          // Files are handled separately
+          initialState[element.name] = null;
+        } else if (element.type === 'checkbox' || element.type === 'radio') {
+          initialState[element.name] = element.checked;
+        } else {
+          initialState[element.name] = element.value;
+        }
+      }
+    });
+    
+    // Disable submit button initially
+    submitBtn.disabled = true;
+    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    
+    // Function to check if form has been modified
+    function checkFormChanged() {
+      let isChanged = false;
+      
+      // Check each form element against its initial state
+      Array.from(form.elements).forEach(element => {
+        if (element.name && element.name !== 'csrfmiddlewaretoken') {
+          if (element.type === 'file') {
+            // If file input has files, form has changed
+            if (element.files && element.files.length > 0) {
+              isChanged = true;
+            }
+          } else if (element.type === 'checkbox' || element.type === 'radio') {
+            // If checkbox/radio state changed
+            if (initialState[element.name] !== element.checked) {
+              isChanged = true;
+            }
+          } else {
+            // For text inputs, textarea, select
+            if (initialState[element.name] !== element.value) {
+              isChanged = true;
+            }
+          }
+        }
+      });
+      
+      // Update button state based on form changes
+      if (isChanged) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+    
+    // Add event listeners for form changes
+    form.addEventListener('input', checkFormChanged);
+    form.addEventListener('change', checkFormChanged);
+    
+    // Also check when selecting a file
+    const fileInputs = form.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(fileInput => {
+      fileInput.addEventListener('change', checkFormChanged);
+    });
+  });
+</script>
+<!-- Form validation script - ends here -->
 {% endblock %}
