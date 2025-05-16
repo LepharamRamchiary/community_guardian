@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from django.db.models import Q
-from .models import Issue
+from .models import Issue, Comment
 from .forms import IssueForm
 from django.urls import reverse
 
@@ -77,9 +77,11 @@ def dashboard(request):
 @login_required
 def issue_detail(request, issue_id):
     issue = get_object_or_404(Issue, id=issue_id)
+    comments = issue.comments.filter(parent=None).order_by('-created_at')
     from_my_issues = request.GET.get('source') == 'my_issue'
     context = {
         'issue': issue,
+        'comments': comments,
         'from_my_issues': from_my_issues,
         # Other context variables
     }
@@ -122,3 +124,37 @@ def delete_issue(request, issue_id):
         return redirect('my_issue')
     
     return render(request, 'issue/delete_confirmation.html', {'issue': issue})
+
+
+# comment
+@login_required
+def add_comment(request, issue_id):
+    if request.method == 'POST':
+        issue = get_object_or_404(Issue, id=issue_id)
+        Comment.objects.create(
+            issue=issue,
+            user=request.user,
+            text=request.POST['text']
+        )
+    return redirect(f"{reverse('issue_detail', kwargs={'issue_id': issue_id})}#comments")
+
+@login_required
+def add_reply(request, comment_id):
+    if request.method == 'POST':
+        parent = get_object_or_404(Comment, id=comment_id)
+        Comment.objects.create(
+            issue=parent.issue,
+            user=request.user,
+            text=request.POST['text'],
+            parent=parent
+        )
+    return redirect(f"{reverse('issue_detail', kwargs={'issue_id': parent.issue.id})}#comments")
+
+@login_required
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+    return redirect(f"{reverse('issue_detail', kwargs={'issue_id': comment.issue.id})}#comments")
