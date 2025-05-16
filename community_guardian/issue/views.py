@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from .models import Issue
 from .forms import IssueForm
@@ -69,3 +70,15 @@ def all_issues_public(request):
 @login_required
 def dashboard(request):
     return render(request, 'dashboard/dashboard.html')
+
+
+@login_required
+def issue_detail(request, issue_id):
+    issue = get_object_or_404(Issue, id=issue_id)
+    from_my_issues = request.GET.get('source') == 'my_issue'
+    context = {
+        'issue': issue,
+        'from_my_issues': from_my_issues,
+        # Other context variables
+    }
+    return render(request, 'details_issue/details_issue.html', context)

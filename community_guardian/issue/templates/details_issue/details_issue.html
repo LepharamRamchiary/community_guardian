@@ -1,0 +1,396 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="">
+  <!-- Issue Details Card -->
+  <div class="bg-white rounded-lg shadow-md p-6 mt-4">
+    <div class="flex flex-col-reverse md:flex-row gap-6">
+      <!-- Issue Information -->
+      <div class="flex-1 flex flex-col justify-between">
+        <div>
+          <!-- Title and Status -->
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+            <h2 class="text-2xl font-bold text-purple-700 break-words">{{ issue.title }}</h2>
+            <span class="inline-block bg-{{ issue.status|lower }}-100 text-{{ issue.status|lower }}-700 text-xs px-3 py-1 rounded-full font-semibold">
+              {{ issue.get_status_display }}
+            </span>
+          </div>
+          
+          <!-- Categories and Priority -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="inline-block bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full font-semibold">
+              {{ issue.get_category_display }}
+            </span>
+            {% if issue.priority %}
+              <span class="inline-block bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full font-semibold">
+                Priority: {{ issue.get_priority_display }}
+              </span>
+            {% endif %}
+          </div>
+          
+          <!-- Description -->
+          <div class="mb-4">
+            <h3 class="text-sm font-semibold text-gray-600 mb-1">Description</h3>
+            <p class="text-gray-800 text-sm whitespace-pre-line break-words">{{ issue.description }}</p>
+          </div>
+          
+          <!-- Location with Map Link -->
+          <div class="mb-4">
+            <h3 class="text-sm font-semibold text-gray-600 mb-1">Location</h3>
+            <div class="flex items-center gap-2">
+              <p class="text-gray-800 text-sm break-words flex-1">{{ issue.location }}</p>
+              <a href="https://maps.google.com/?q={{ issue.location|urlencode }}" target="_blank" class="text-purple-600 hover:text-purple-800 text-xs flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                View on Map
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Reporter Info and Timestamps -->
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-4 text-xs text-gray-500">
+          <span class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Reported by: {{ issue.user.username }}
+          </span>
+          <span class="hidden sm:block">|</span>
+          <span class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Created: {{ issue.created_at|date:"M d, Y H:i" }}
+          </span>
+          {% if issue.updated_at %}
+            <span class="hidden sm:block">|</span>
+            <span class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Updated: {{ issue.updated_at|date:"M d, Y H:i" }}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- Issue Image with Lightbox -->
+      {% if issue.image %}
+        <div class="flex-shrink-0 w-full md:w-64 h-64 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer" id="issueImage">
+          <img src="{{ issue.image.url }}" alt="Issue Image" class="object-cover w-full h-full">
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Action Buttons -->
+  <div class="flex flex-wrap gap-3 mt-6 mb-4">
+    {% if user == issue.user %}
+      <a href="#" class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium rounded-md transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Edit Issue
+      </a>
+      <button id="deleteIssueBtn" class="inline-flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-md transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+        Delete Issue
+      </button>
+    {% endif %}
+    <button id="shareIssueBtn" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-md transition duration-300">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+      </svg>
+      Share Issue
+    </button>
+    <a href="{% url 'my_issue' %}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-md transition duration-300">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Issues
+    </a>
+  </div>
+  
+  <!-- Comments Section -->
+  <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Comments ({{ comments|length }})</h3>
+    
+    <!-- Comment Form -->
+    <form method="post" action="#" class="mb-6">
+      {% csrf_token %}
+      <div class="mb-4">
+        <textarea name="comment" rows="3" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Add your comment here..."></textarea>
+      </div>
+      <div class="flex justify-end">
+        <button type="submit" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-300">
+          Submit Comment
+        </button>
+      </div>
+    </form>
+    
+    <!-- Comments List -->
+    <div class="space-y-4">
+      {% if comments %}
+        {% for comment in comments %}
+          <div class="border-b border-gray-200 pb-4 last:border-b-0">
+            <div class="flex items-start space-x-3">
+              <div class="flex-shrink-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm">
+                {{ comment.user.username|first|upper }}
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-semibold text-gray-700">{{ comment.user.username }}</h4>
+                  <span class="text-xs text-gray-500">{{ comment.created_at|date:"M d, Y H:i" }}</span>
+                </div>
+                <p class="text-sm text-gray-600 mt-1 whitespace-pre-line">{{ comment.text }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-center py-4">
+          <p class="text-gray-500 text-sm">No comments yet. Be the first to comment!</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Status Updates Section -->
+  <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Status Updates</h3>
+    
+    <!-- Timeline -->
+    <div class="relative pl-8 pb-2">
+      <!-- Timeline Line -->
+      <div class="absolute left-4 top-0 h-full w-0.5 bg-gray-200"></div>
+      
+      <!-- Status Items -->
+      {% if status_updates %}
+        {% for update in status_updates %}
+          <div class="mb-6 relative">
+            <!-- Timeline Dot -->
+            <div class="absolute -left-4 mt-1.5 w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+              <div class="w-4 h-4 rounded-full bg-purple-600"></div>
+            </div>
+            
+            <!-- Status Content -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-700">Status changed to: {{ update.get_new_status_display }}</h4>
+                  <p class="text-xs text-gray-500 mt-1">By: {{ update.user.username }}</p>
+                </div>
+                <span class="text-xs text-gray-500">{{ update.created_at|date:"M d, Y H:i" }}</span>
+              </div>
+              {% if update.note %}
+                <p class="text-sm text-gray-600 mt-2 whitespace-pre-line">{{ update.note }}</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-center py-4">
+          <p class="text-gray-500 text-sm">No status updates yet.</p>
+        </div>
+      {% endif %}
+      
+      <!-- Initial Reported Status -->
+      <div class="mb-6 relative">
+        <!-- Timeline Dot -->
+        <div class="absolute -left-4 mt-1.5 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+          <div class="w-4 h-4 rounded-full bg-green-600"></div>
+        </div>
+        
+        <!-- Status Content -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="text-sm font-semibold text-gray-700">Issue Reported</h4>
+              <p class="text-xs text-gray-500 mt-1">By: {{ issue.user.username }}</p>
+            </div>
+            <span class="text-xs text-gray-500">{{ issue.created_at|date:"M d, Y H:i" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Lightbox Modal -->
+<div id="imageLightbox" class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center hidden">
+  <div class="max-w-4xl w-full p-4">
+    <div class="relative">
+      <img id="lightboxImage" src="" alt="Issue Image Full Size" class="w-full max-h-[80vh] object-contain">
+      <button id="closeLightbox" class="absolute top-4 right-4 bg-white rounded-full p-2 text-gray-800 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg max-w-md w-full p-6">
+    <h3 class="text-lg font-bold text-gray-900 mb-4">Confirm Deletion</h3>
+    <p class="text-gray-700 mb-6">Are you sure you want to delete this issue? This action cannot be undone.</p>
+    <div class="flex justify-end space-x-3">
+      <button id="cancelDelete" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-300">
+        Cancel
+      </button>
+      <form method="post" action="#">
+        {% csrf_token %}
+        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300">
+          Delete
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg max-w-md w-full p-6">
+    <h3 class="text-lg font-bold text-gray-900 mb-4">Share This Issue</h3>
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Issue Link</label>
+      <div class="flex">
+        <input type="text" id="issueLink" value="{{ request.scheme }}://{{ request.get_host }}{% url 'issue_detail' issue.id %}" 
+          class="flex-1 border border-gray-300 rounded-l-md py-2 px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600" readonly>
+        <button id="copyLinkBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-4 rounded-r-md flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="mb-6">
+      <p class="text-sm text-gray-500">Share via:</p>
+      <div class="flex space-x-4 mt-3">
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}{% url 'issue_detail' issue.id %}" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+          </svg>
+        </a>
+        <a href="https://twitter.com/intent/tweet?text=Check out this community issue&url={{ request.scheme }}://{{ request.get_host }}{% url 'issue_detail' issue.id %}" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-400 text-white hover:bg-blue-500">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+          </svg>
+        </a>
+        <a href="https://wa.me/?text=Check out this community issue: {{ request.scheme }}://{{ request.get_host }}{% url 'issue_detail' issue.id %}" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white hover:bg-green-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+          </svg>
+        </a>
+        <a href="mailto:?subject=Community Issue: {{ issue.title }}&body=Check out this community issue: {{ request.scheme }}://{{ request.get_host }}{% url 'issue_detail' issue.id %}" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-500 text-white hover:bg-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="flex justify-end">
+      <button id="closeShareModal" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-300">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Interactions -->
+<script>
+  // DOM Elements
+  const issueImage = document.getElementById('issueImage');
+  const imageLightbox = document.getElementById('imageLightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  const closeLightbox = document.getElementById('closeLightbox');
+  const deleteIssueBtn = document.getElementById('deleteIssueBtn');
+  const deleteModal = document.getElementById('deleteModal');
+  const cancelDelete = document.getElementById('cancelDelete');
+  const shareIssueBtn = document.getElementById('shareIssueBtn');
+  const shareModal = document.getElementById('shareModal');
+  const closeShareModal = document.getElementById('closeShareModal');
+  const copyLinkBtn = document.getElementById('copyLinkBtn');
+  const issueLink = document.getElementById('issueLink');
+
+  // Image Lightbox
+  if (issueImage) {
+    issueImage.addEventListener('click', () => {
+      lightboxImage.src = issueImage.querySelector('img').src;
+      imageLightbox.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  closeLightbox.addEventListener('click', () => {
+    imageLightbox.classList.add('hidden');
+    document.body.style.overflow = '';
+  });
+
+  imageLightbox.addEventListener('click', (e) => {
+    if (e.target === imageLightbox) {
+      imageLightbox.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Delete Modal
+  if (deleteIssueBtn) {
+    deleteIssueBtn.addEventListener('click', () => {
+      deleteModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  cancelDelete.addEventListener('click', () => {
+    deleteModal.classList.add('hidden');
+    document.body.style.overflow = '';
+  });
+
+  deleteModal.addEventListener('click', (e) => {
+    if (e.target === deleteModal) {
+      deleteModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Share Modal
+  shareIssueBtn.addEventListener('click', () => {
+    shareModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  });
+
+  closeShareModal.addEventListener('click', () => {
+    shareModal.classList.add('hidden');
+    document.body.style.overflow = '';
+  });
+
+  shareModal.addEventListener('click', (e) => {
+    if (e.target === shareModal) {
+      shareModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Copy Link Button
+  copyLinkBtn.addEventListener('click', () => {
+    issueLink.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const originalContent = copyLinkBtn.innerHTML;
+    copyLinkBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
+    
+    setTimeout(() => {
+      copyLinkBtn.innerHTML = originalContent;
+    }, 2000);
+  });
+</script>
+{%endblock%}

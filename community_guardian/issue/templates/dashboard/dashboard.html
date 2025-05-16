@@ -123,7 +123,11 @@
                     <li class="text-gray-600">All Issues</li>
                   {% elif request.resolver_match.url_name == 'issue_detail' %}
                     <li><span>&gt;</span></li>
-                    <li><a href="{% url 'my_issue' %}" class="hover:underline text-purple-700">My Issues</a></li>
+                    {% if from_my_issues %}
+                      <li><a href="{% url 'my_issue' %}" class="hover:underline text-purple-700">My Issues</a></li>
+                    {% else %}
+                      <li><a href="{% url 'all_issues_public' %}" class="hover:underline text-purple-700">All Issues</a></li>
+                    {% endif %}
                     <li><span>&gt;</span></li>
                     <li class="text-gray-600">Issue Details</li>
                   {% endif %}
