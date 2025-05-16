@@ -85,26 +85,52 @@
           </button>
           
           <!-- Logo/Title -->
-          <div class="flex items-center">
-            <a href="{% url 'leanding' %}" class="text-xl font-bold text-purple-700 flex items-center"> 
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-8 w-8 text-purple-600 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-                >
-                <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-            </svg> 
-          Community Guardian
-        </a>
+          <div class="flex flex-col">
+            <div class="flex items-center">
+              <a href="{% url 'leanding' %}" class="text-xl font-bold text-purple-700 flex items-center"> 
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8 text-purple-600 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                    >
+                    <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                </svg> 
+                 Community Guardian
+              </a>
+            </div>
+             <!-- Breadcrumbs -->
+              <nav class="mt-1 text-xs text-gray-500" aria-label="Breadcrumb">
+                <ol class="list-reset flex space-x-2">
+                  <li>
+                    <a href="{% url 'dashboard' %}" class="hover:underline ml-10 {% if request.resolver_match.url_name == 'dashboard' %}text-gray-600{% else %}text-purple-700{% endif %}">Dashboard</a>
+                  </li>
+                  {% if request.resolver_match.url_name == 'report_issue' %}
+                    <li><span>&gt;</span></li>
+                    <li class="text-gray-600">Report Issue</li>
+                  {% elif request.resolver_match.url_name == 'my_issue' %}
+                    <li><span>&gt;</span></li>
+                    <li class="text-gray-600">My Issues</li>
+                  {% elif request.resolver_match.url_name == 'all_issues_public' %}
+                    <li><span>&gt;</span></li>
+                    <li class="text-gray-600">All Issues</li>
+                  {% elif request.resolver_match.url_name == 'issue_detail' %}
+                    <li><span>&gt;</span></li>
+                    <li><a href="{% url 'my_issue' %}" class="hover:underline text-purple-700">My Issues</a></li>
+                    <li><span>&gt;</span></li>
+                    <li class="text-gray-600">Issue Details</li>
+                  {% endif %}
+                </ol>
+            </nav>
           </div>
+          
           
           <!-- User menu -->
           <div class="relative">
