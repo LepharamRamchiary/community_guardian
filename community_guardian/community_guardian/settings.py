@@ -133,67 +133,99 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configure Django's logging based on environment
-if DEBUG:
-    # Local development logging
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'verbose': {
-                'format': '{levelname} {asctime} {module} {message}',
-                'style': '{',
-            },
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
         },
-        'handlers': {
-            'console': {
-                'level': 'INFO',
-                'class': 'logging.StreamHandler',
-                'formatter': 'verbose',
-            },
-            'file': {
-                'level': 'ERROR',
-                'class': 'logging.FileHandler',
-                'filename': os.path.join(BASE_DIR, 'django_errors.log'),  # Use project directory
-                'formatter': 'verbose',
-            },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
         },
-        'loggers': {
-            'django': {
-                'handlers': ['console', 'file'],
-                'level': 'INFO',
-                'propagate': True,
-            },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
-    }
-else:
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+# if DEBUG:
+#     # Local development logging
+#     LOGGING = {
+#         'version': 1,
+#         'disable_existing_loggers': False,
+#         'formatters': {
+#             'verbose': {
+#                 'format': '{levelname} {asctime} {module} {message}',
+#                 'style': '{',
+#             },
+#         },
+#         'handlers': {
+#             'console': {
+#                 'level': 'INFO',
+#                 'class': 'logging.StreamHandler',
+#                 'formatter': 'verbose',
+#             },
+#             'file': {
+#                 'level': 'ERROR',
+#                 'class': 'logging.FileHandler',
+#                 'filename': os.path.join(BASE_DIR, 'django_errors.log'),  # Use project directory
+#                 'formatter': 'verbose',
+#             },
+#         },
+#         'loggers': {
+#             'django': {
+#                 'handlers': ['console', 'file'],
+#                 'level': 'INFO',
+#                 'propagate': True,
+#             },
+#         },
+#     }
+# else:
     # Production logging
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'verbose': {
-                'format': '{levelname} {asctime} {module} {message}',
-                'style': '{',
-            },
-        },
-        'handlers': {
-            'console': {
-                'level': 'INFO',
-                'class': 'logging.StreamHandler',
-                'formatter': 'verbose',
-            },
-            'file': {
-                'level': 'ERROR',
-                'class': 'logging.FileHandler',
-                'filename': '/var/data/django_errors.log',  # Use persistent disk
-                'formatter': 'verbose',
-            },
-        },
-        'loggers': {
-            'django': {
-                'handlers': ['console', 'file'],
-                'level': 'INFO',
-                'propagate': True,
-            },
-        },
-    }
+    # LOGGING = {
+    #     'version': 1,
+    #     'disable_existing_loggers': False,
+    #     'formatters': {
+    #         'verbose': {
+    #             'format': '{levelname} {asctime} {module} {message}',
+    #             'style': '{',
+    #         },
+    #     },
+    #     'handlers': {
+    #         'console': {
+    #             'level': 'INFO',
+    #             'class': 'logging.StreamHandler',
+    #             'formatter': 'verbose',
+    #         },
+    #         'file': {
+    #             'level': 'ERROR',
+    #             'class': 'logging.FileHandler',
+    #             'filename': '/var/data/django_errors.log',  # Use persistent disk
+    #             'formatter': 'verbose',
+    #         },
+    #     },
+    #     'loggers': {
+    #         'django': {
+    #             'handlers': ['console', 'file'],
+    #             'level': 'INFO',
+    #             'propagate': True,
+    #         },
+    #     },
+    # }
