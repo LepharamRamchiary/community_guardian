@@ -3,11 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegisterForm
 from django.contrib import messages
-import logging
-logger = logging.getLogger(__name__)
 
 def register_view(request):
-    logger.error("Register view called")
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
