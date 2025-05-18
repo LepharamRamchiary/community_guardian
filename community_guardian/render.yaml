@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: community-guardian
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn community_guardian.asgi:application -k uvicorn.workers.UvicornWorker --log-file -
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.0
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+    
+    # Specifying persistent disk to store the SQLite database
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 1
