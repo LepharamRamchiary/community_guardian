@@ -1,5 +1,6 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
+{% load chat_extras %}
 
 {% block dashboard_content %}
 <!-- Chat container with responsive design -->
@@ -84,7 +85,7 @@
               
               <div class="max-w-[70%]">
                 <div class="{% if message.sender.username == user.username %}bg-purple-600 text-white rounded-tl-lg rounded-tr-lg rounded-bl-lg{% else %}bg-gray-200 text-gray-800 rounded-tl-lg rounded-tr-lg rounded-br-lg{% endif %} p-3 shadow-sm">
-                  {{ message.content }}
+                  {{ message.content|urlize_message|linebreaksbr}}
                 </div>
                 <div class="text-xs text-gray-500 mt-1 {% if message.sender.username == user.username %}text-right{% endif %}">
                   {{ message.timestamp|date:"g:i A" }}
