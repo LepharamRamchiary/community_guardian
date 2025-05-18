@@ -1,7 +1,316 @@
 {% extends 'dashboard/dashboard.html' %}
 {% load static %}
 
-
 {% block dashboard_content %}
-<h1>sajdkgaskj</h1>
+<!-- Chat container with responsive design -->
+<div class="flex flex-col h-[calc(100vh-10rem)] bg-white rounded-lg shadow-md overflow-hidden">
+  <!-- Chat header with user info -->
+  <div class="bg-purple-50 text-white p-4 flex items-center justify-between shadow-md">
+    <div class="flex items-center">
+      <div>
+        <p class="sm:text-lg text-sm font-semibold text-purple-600">
+          <span id="userStatus">Chat With You Community</span>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Mobile dropdown for users list -->
+    <div class="relative md:hidden">
+      <button id="mobileChatMenu" class="flex items-center focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+        </svg>
+      </button>
+      <div id="mobileUserList" class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-50 hidden">
+        <div class="py-2 px-3 border-b border-gray-200">
+          <h4 class="text-sm font-medium text-gray-700">Community Members</h4>
+        </div>
+        <div class="py-2 max-h-60 overflow-y-auto">
+          {% for user in users %}
+            <a href="{% url 'chat' user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 flex items-center">
+              <div class="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs mr-2">
+                {{ user.username|first|upper }}
+              </div>
+              <div class="flex-1">
+                <div>{{ user.username }}</div>
+                <div class="text-xs text-gray-500">Active now</div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main chat layout -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- User list (desktop only) -->
+    <div class="hidden md:block w-72 bg-gray-50 border-r border-gray-200 overflow-y-auto">
+      <div class="py-4 px-3 border-b border-gray-200">
+        <h4 class="text-sm font-medium text-gray-700">Community Members</h4>
+      </div>
+      <div class="py-2 overflow-y-auto" style="max-height: calc(100vh - 15rem);">
+        {% for user in users %}
+          <a href="{% url 'chat' user.username %}" class="block px-4 py-3 hover:bg-gray-100 {% if user.username == friend.username %}bg-purple-50 border-l-4 border-purple-500{% endif %}">
+            <div class="flex items-center">
+              <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-medium mr-3">
+                {{ user.username|first|upper }}
+              </div>
+              <div>
+                <p class="font-medium text-gray-800">{{ user.username }}</p>
+                <p class="text-xs text-gray-500">Active now</p>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- Chat messages area -->
+    <div class="flex-1 flex flex-col">
+      <!-- Messages container with dynamic height and scrolling -->
+      <div id="messagesContainer" class="flex-1 p-4 overflow-y-auto">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="mb-4 flex {% if message.sender.username == user.username %}justify-end{% else %}justify-start{% endif %}">
+              {% if message.sender.username != user.username %}
+                <div class="flex flex-col items-start mr-2">
+                  <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-medium">
+                    {{ message.sender.username|first|upper }}
+                  </div>
+                  <span class="text-xs font-medium text-gray-500 mt-1">{{ message.sender.username }}</span>
+                </div>
+              {% endif %}
+              
+              <div class="max-w-[70%]">
+                <div class="{% if message.sender.username == user.username %}bg-purple-600 text-white rounded-tl-lg rounded-tr-lg rounded-bl-lg{% else %}bg-gray-200 text-gray-800 rounded-tl-lg rounded-tr-lg rounded-br-lg{% endif %} p-3 shadow-sm">
+                  {{ message.content }}
+                </div>
+                <div class="text-xs text-gray-500 mt-1 {% if message.sender.username == user.username %}text-right{% endif %}">
+                  {{ message.timestamp|date:"g:i A" }}
+                </div>
+              </div>
+              
+              {% if message.sender.username == user.username %}
+                <div class="flex flex-col items-end ml-2">
+                  <div class="w-8 h-8 rounded-full bg-purple-700 flex items-center justify-center text-white font-medium">
+                    {{ message.sender.username|first|upper }}
+                  </div>
+                  <span class="text-xs font-medium text-gray-500 mt-1">{{ message.sender.username }}</span>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="flex items-center justify-center h-full">
+            <div class="text-center p-8 rounded-lg bg-gray-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <p class="text-gray-600 font-medium">No messages yet</p>
+              <p class="text-gray-500 text-sm mt-1">Start the conversation with {{ friend.username }}</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      
+      <!-- Message input form -->
+      <div class="border-t border-gray-200 p-4 bg-gray-50">
+        <form id="messageForm" method="post" class="flex items-center">
+          {% csrf_token %}
+          <div class="flex-1 relative">
+            <input type="text" id="messageContent" name="content" placeholder="Type your message..." required class="w-full px-4 py-3 pr-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <button type="button" id="emojiButton" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-purple-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+          </div>
+          <button type="submit" class="ml-3 px-4 py-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+            <div class="flex items-center">
+              <span class="mr-1 hidden sm:inline">Send</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+              </svg>
+
+            </div>
+          </button>
+        </form>
+      </div>
+      
+      <!-- Emoji picker -->
+      <div id="emojiPicker" class="hidden absolute bottom-20 right-4 bg-white rounded-lg shadow-lg p-2 border border-gray-200 z-50">
+        <div class="grid grid-cols-8 gap-1">
+          <!-- Common emojis -->
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😀</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😂</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">❤️</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">👍</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😊</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">🎉</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">👏</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">🙏</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😍</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😢</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">🔥</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">✨</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">🤔</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😎</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">👋</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">🙄</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😁</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😭</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😘</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">👌</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">🤣</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">😉</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">🤗</button>
+          <button type="button" class="emoji-btn p-1 hover:bg-gray-100 rounded">💕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add emoji picker and chat functionality -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const mobileChatMenu = document.getElementById('mobileChatMenu');
+    const mobileUserList = document.getElementById('mobileUserList');
+    const messagesContainer = document.getElementById('messagesContainer');
+    const emojiButton = document.getElementById('emojiButton');
+    const emojiPicker = document.getElementById('emojiPicker');
+    const messageInput = document.getElementById('messageContent');
+    const messageForm = document.getElementById('messageForm');
+    const emojiButtons = document.querySelectorAll('.emoji-btn');
+    
+    // Scroll to bottom of messages on page load
+    function scrollToBottom() {
+      if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    }
+    
+    // Call scroll function on load
+    scrollToBottom();
+    
+    // Toggle mobile user list
+    if (mobileChatMenu) {
+      mobileChatMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileUserList.classList.toggle('hidden');
+      });
+    }
+    
+    // Toggle emoji picker
+    if (emojiButton) {
+      emojiButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        emojiPicker.classList.toggle('hidden');
+      });
+    }
+    
+    // Add emoji to message input when clicked
+    if (emojiButtons.length > 0) {
+      emojiButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const emoji = btn.textContent;
+          const cursorPos = messageInput.selectionStart;
+          const textBefore = messageInput.value.substring(0, cursorPos);
+          const textAfter = messageInput.value.substring(cursorPos);
+          
+          messageInput.value = textBefore + emoji + textAfter;
+          // Reset cursor position after emoji
+          messageInput.selectionStart = cursorPos + emoji.length;
+          messageInput.selectionEnd = cursorPos + emoji.length;
+          messageInput.focus();
+        });
+      });
+    }
+    
+    // Close emoji picker and mobile user list when clicking outside
+    document.addEventListener('click', (e) => {
+      if (emojiPicker && !emojiButton.contains(e.target) && !emojiPicker.contains(e.target)) {
+        emojiPicker.classList.add('hidden');
+      }
+      
+      if (mobileUserList && mobileChatMenu && !mobileChatMenu.contains(e.target) && !mobileUserList.contains(e.target)) {
+        mobileUserList.classList.add('hidden');
+      }
+    });
+    
+    // Form submission handling
+    if (messageForm) {
+      messageForm.addEventListener('submit', function(e) {
+        const messageContent = messageInput.value.trim();
+        
+        if (!messageContent) {
+          e.preventDefault(); // Don't submit empty messages
+        } else {
+          // You can add form validation or message processing here
+          // For now, we'll just let the form submit normally
+          
+          // Optional: Clear the input field immediately for better UX
+          setTimeout(() => {
+            messageInput.value = '';
+          }, 10);
+        }
+      });
+    }
+    
+    // Auto-resize message container based on window size
+    function resizeMessageContainer() {
+      if (messagesContainer) {
+        messagesContainer.style.maxHeight = `calc(100vh - ${messagesContainer.offsetTop + 85}px)`;
+      }
+    }
+    
+    // Call resize on load and on window resize
+    resizeMessageContainer();
+    window.addEventListener('resize', resizeMessageContainer);
+    
+    // Optional: Poll for new messages (simulating real-time updates)
+    // Note: In a real application, consider using WebSockets instead
+    function pollForNewMessages() {
+      // This is a placeholder - in a real app, you would fetch new messages from the server
+      // For example:
+      /*
+      fetch('/api/messages/{{ friend.username }}?since=' + lastMessageTimestamp)
+        .then(response => response.json())
+        .then(data => {
+          if (data.messages && data.messages.length > 0) {
+            // Append new messages to the container
+            appendNewMessages(data.messages);
+            // Scroll to bottom after new messages
+            scrollToBottom();
+          }
+        });
+      */
+      
+      // Poll every 5 seconds
+      setTimeout(pollForNewMessages, 5000);
+    }
+    
+    // Start polling
+    // pollForNewMessages();
+    
+    // Function to append new messages (would be used with polling or WebSockets)
+    function appendNewMessages(messages) {
+      // This is a placeholder - in a real app, you would create DOM elements for new messages
+      // For example:
+      /*
+      messages.forEach(message => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `mb-4 flex ${message.sender.username === currentUsername ? 'justify-end' : 'justify-start'}`;
+        
+        // Build message HTML
+        // ...
+        
+        messagesContainer.appendChild(messageDiv);
+      });
+      */
+    }
+  });
+</script>
 {% endblock %}

@@ -43,7 +43,22 @@ INSTALLED_APPS = [
     #app
     'accounts',
     'issue',
+    'chat',
+    'channels',
 ]
+
+# Channel layer
+ASGI_APPLICATION = 'chat_project.asgi.application'
+
+# Redis layer config
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
