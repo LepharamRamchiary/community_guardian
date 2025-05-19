@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 class Issue(models.Model):
     STATUS_CHOICES = [
@@ -22,7 +23,8 @@ class Issue(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='select_category')
-    image = models.ImageField(upload_to='issue_images/')
+    image = CloudinaryField('image', folder='issue_images')
+    # image = models.ImageField(upload_to='issue_images/')
     description = models.TextField()
     location = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
