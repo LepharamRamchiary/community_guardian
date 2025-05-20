@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
+from django.db import connections, OperationalError
 
 load_dotenv()
 
@@ -83,29 +85,35 @@ WSGI_APPLICATION = 'community_guardian.wsgi.application'
 # Use SQLite with different paths for local vs production
 if DEBUG:
     # Local development: use SQLite in project directory
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql',
+    #         'NAME': 'community_guardian_DB',
+    #         'USER': 'lepha',
+    #         'PASSWORD': 'lepha123',
+    #         'HOST': 'localhost',
+    #         'PORT': '5432',
+    #     }
+    # }
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'community_guardian_DB',
-            'USER': 'lepha',
-            'PASSWORD': 'lepha123',
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
+        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
     }
 
 else:
     # Production: use SQLite in the project directory
     # Render has a persistent disk at /opt/render/project/src/
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql',
+    #         'NAME': os.environ.get('DB_NAME'),
+    #         'USER': os.environ.get('DB_USER'),
+    #         'PASSWORD': os.environ.get('DB_PASSWORD'),
+    #         'HOST': os.environ.get('DB_HOST'),
+    #         'PORT': os.environ.get('DB_PORT'),
+    #     }
+    # }
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME'),
-            'USER': os.environ.get('DB_USER'),
-            'PASSWORD': os.environ.get('DB_PASSWORD'),
-            'HOST': os.environ.get('DB_HOST'),
-            'PORT': os.environ.get('DB_PORT'),
-        }
+        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
     }
 
 # Password validation
@@ -192,6 +200,14 @@ LOGGING = {
         },
     },
 }
+
+
+
+try:
+    connections['default'].cursor()
+    print("✅ Database connected!")
+except OperationalError:
+    print("❌ Database NOT connected!")
 
 # import os
 # from pathlib import Path
