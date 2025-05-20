@@ -85,17 +85,26 @@ if DEBUG:
     # Local development: use SQLite in project directory
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'community_guardian_DB',
+            'USER': 'lepha',
+            'PASSWORD': 'lepha123',
+            'HOST': 'localhost',
+            'PORT': '5432',
         }
     }
+
 else:
     # Production: use SQLite in the project directory
     # Render has a persistent disk at /opt/render/project/src/
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME'),
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+            'HOST': os.environ.get('DB_HOST'),
+            'PORT': os.environ.get('DB_PORT'),
         }
     }
 
