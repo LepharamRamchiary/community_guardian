@@ -3,6 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 from django.db import connections, OperationalError
+# from decouple import config
 
 load_dotenv()
 
@@ -81,6 +82,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'community_guardian.wsgi.application'
 
+
 # Database setup
 # Use SQLite with different paths for local vs production
 if DEBUG:
@@ -97,6 +99,7 @@ if DEBUG:
     # }
     DATABASES = {
         'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+        # 'default': dj_database_url.config(default=config('DATABASE_URL'))
     }
 
 else:
@@ -113,7 +116,8 @@ else:
     #     }
     # }
     DATABASES = {
-        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+        # 'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+        'default': dj_database_url.config(default=config('DATABASE_URL'))
     }
 
 # Password validation
