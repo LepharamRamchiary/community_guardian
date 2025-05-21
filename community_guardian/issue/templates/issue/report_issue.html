@@ -1,102 +1,475 @@
-{% extends 'dashboard/dashboard.html' %}
-{% load static %}
-
+{% extends 'dashboard/dashboard.html' %} 
+{% load static %} 
 {% block dashboard_content %}
 <div class="bg-white rounded-lg shadow-md p-6">
   <div class="flex items-center mb-6">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 text-purple-600 mr-2"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+      />
     </svg>
     <h2 class="text-2xl font-bold text-gray-800">Report an Issue</h2>
   </div>
-  
-  <p class="text-gray-600 mb-6">Fill out the form below to report a community issue. Please provide as much detail as possible.</p>
-  
-  <form method="post" enctype="multipart/form-data" class="space-y-6">
-    {% csrf_token %}
-    
-    {% for field in form %}
-    <div class="space-y-2">
-      <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
-        {{ field.label }}
-        {% if field.field.required %}
-        <span class="text-red-500">*</span>
-        {% endif %}
-      </label>
-      
-      {% if field.field.widget.input_type == 'file' %}
-        <!-- File upload widget -->
-        <div class="w-full max-w-lg mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="mt-1 flex justify-center px-2 sm:px-4 py-6 border-2 border-gray-300 border-dashed rounded-md">
-            <div class="space-y-2 text-center w-full max-w-md">
-              <svg class="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              <div class="flex justify-center text-sm sm:text-base text-gray-600 w-full">
-                <label for="{{ field.id_for_label }}" class="flex flex-col relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none w-full">
-                  <span class="mb-1">Upload a file</span>
-                  <div class="w-full overflow-hidden px-2 sm:px-4">
-                    <span class="text-center block w-full">{{field}}</span>
-                  </div>
-                </label>
-              </div>
-              <p class="text-xs sm:text-sm text-gray-400 mt-2">PNG, JPG, GIF up to 10MB</p>
-            </div>
-          </div>
+
+  <!-- Chat-like interface container -->
+  <div
+    class="border border-gray-200 rounded-lg mb-6 h-96 overflow-y-auto p-4"
+    id="chat-container"
+  >
+    <!-- Welcome message from the bot -->
+    <div class="flex mb-4">
+      <div class="flex-shrink-0 mr-3">
+        <div
+          class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+            />
+          </svg>
         </div>
-      {% elif field.field.widget.input_type == 'textarea' %}
-        <!-- Textarea widget -->
-        <div class="mt-1">
-          <textarea id="{{ field.id_for_label }}" name="{{ field.html_name }}" rows="4" class="shadow-sm focus:ring-purple-500 focus:border-purple-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2" placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">{{ field.value|default:'' }}</textarea>
-        </div>
-      {% elif field.name == 'category' %}
-        <!-- Dropdown for category field -->
-        <div class="mt-1">
-          <select id="{{ field.id_for_label }}" name="{{ field.html_name }}" class="shadow-sm focus:ring-purple-500 focus:border-purple-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2">
-            {% for choice_id, choice_label in field.field.choices %}
-              <option value="{{ choice_id }}" {% if field.value == choice_id %}selected{% endif %}>{{ choice_label }}</option>
-            {% endfor %}
-          </select>
-        </div>
-      {% else %}
-        <!-- Default input field -->
-        <div class="mt-1">
-          <input type="{{ field.field.widget.input_type|default:'text' }}" id="{{ field.id_for_label }}" name="{{ field.html_name }}" value="{{ field.value|default:'' }}" class="shadow-sm focus:ring-purple-500 focus:border-purple-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md p-2" placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">
-        </div>
-      {% endif %}
-      
-      {% if field.errors %}
-      <div class="text-sm text-red-600">
-        {% for error in field.errors %}
-        <p>{{ error }}</p>
-        {% endfor %}
       </div>
-      {% endif %}
-      
-      {% if field.help_text %}
-      <p class="mt-2 text-sm text-gray-500">{{ field.help_text }}</p>
-      {% endif %}
+      <div class="bg-gray-100 rounded-lg p-3 max-w-3xl">
+        <p class="text-gray-800">
+          Hello {{ request.user.username }}! I'm your community assistant. I'm
+          here to help you report an issue. Let's get started! What type of
+          issue would you like to report?
+        </p>
+      </div>
     </div>
-    {% endfor %}
-    
-    <div class="flex justify-end">
-      <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-        Submit Issue
-      </button>
+  </div>
+
+  <!-- Hidden form to store the data -->
+  <form
+    method="post"
+    enctype="multipart/form-data"
+    id="issue-form"
+    class="hidden"
+  >
+    {% csrf_token %} 
+    {% for field in form %}
+    <input
+      type="hidden"
+      id="hidden_{{ field.name }}"
+      name="{{ field.html_name }}"
+      {% if field.value %}
+        value="{{ field.value }}"
+      {% endif %}
+    />
+    {% if field.errors %}
+    <div class="text-sm text-red-600 hidden" id="error_{{ field.name }}">
+      {% for error in field.errors %}
+      <p>{{ error }}</p>
+      {% endfor %}
     </div>
+    {% endif %} {% endfor %}
   </form>
+
+  <!-- Chatbot interaction area -->
+  <div
+    class="flex items-center border border-gray-300 rounded-lg overflow-hidden"
+  >
+    <input
+      type="text"
+      id="user-input"
+      class="flex-grow p-3 focus:outline-none"
+      placeholder="Type your response here..."
+    />
+    <button
+      id="send-btn"
+      class="bg-purple-600 text-white p-3 hover:bg-purple-700 transition duration-200"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+        />
+      </svg>
+    </button>
+    <!-- Submit Issue button (initially hidden) -->
+    <button
+      id="submit-btn"
+      class="bg-purple-600 text-white text-xs sm:text-sm p-3 hover:bg-purple-700 transition duration-200 hidden flex gap-1 items-center"
+      type="submit"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 mr-1"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+        />
+      </svg>
+      Submit
+    </button>
+  </div>
 </div>
+
 {% if messages %}
 <div
   id="popup-message"
   class="fixed top-14 right-14 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50 popup-animation"
 >
-  {% for message in messages %}
-    {{ message }}
-  {% endfor %}
+  {% for message in messages %} {{ message }} {% endfor %}
 </div>
 {% endif %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const chatContainer = document.getElementById("chat-container");
+  const userInput = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
+  const submitBtn = document.getElementById("submit-btn");
+  const issueForm = document.getElementById("issue-form");
+
+  // Track conversation state
+  let conversationState = "category";
+  let isCategorySelected = false; // Track if a category has been selected
+  let collectedData = {
+    category: "",
+    title: "",
+    description: "",
+    location: "",
+    image: null,
+  };
+
+  // Category options from your model
+  const categories = [
+    { value: "road", display: "Road Issue" },
+    { value: "water", display: "Water Issue" },
+    { value: "electricity", display: "Electricity Issue" },
+    { value: "environment", display: "Environment Issue" },
+    { value: "other", display: "Other" },
+  ];
+
+  // Add typing effect to the first bot message
+  function addTypingEffect(element, text, duration = 5000) {
+    const typingSpeed = duration / text.length;
+    element.textContent = "";
+    let i = 0;
+    
+    function typeNextChar() {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+        setTimeout(typeNextChar, typingSpeed);
+      } else {
+        // After typing is complete, show the category options
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "mt-3 flex flex-wrap gap-2";
+
+        categories.forEach((cat) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className =
+            "bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-1 rounded-full text-sm transition";
+          button.textContent = cat.display;
+          button.onclick = function () {
+            addUserMessage(cat.display);
+            collectedData.category = cat.value;
+            document.getElementById("hidden_category").value = cat.value;
+            isCategorySelected = true;
+            nextQuestion();
+          };
+          optionsDiv.appendChild(button);
+        });
+
+        element.parentNode.appendChild(optionsDiv);
+      }
+    }
+    
+    typeNextChar();
+  }
+
+  // Add bot message
+  function addBotMessage(message) {
+    const div = document.createElement("div");
+    div.className = "flex mb-4";
+    div.innerHTML = `
+      <div class="flex-shrink-0 mr-3">
+        <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        </div>
+      </div>
+      <div class="bg-gray-100 rounded-lg p-3 max-w-3xl">
+        <p class="text-gray-800">${message}</p>
+      </div>
+    `;
+    chatContainer.appendChild(div);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    return div.querySelector(".text-gray-800");
+  }
+
+  // Add user message
+  function addUserMessage(message) {
+    const div = document.createElement("div");
+    div.className = "flex mb-4 justify-end";
+    div.innerHTML = `
+      <div class="bg-purple-600 rounded-lg p-3 max-w-3xl text-white">
+        <p>${message}</p>
+      </div>
+      <div class="flex-shrink-0 ml-3">
+        <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+      </div>
+    `;
+    chatContainer.appendChild(div);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  // Add file upload interface directly in the chat
+  function addFileUploadInterface() {
+    const div = document.createElement("div");
+    div.className = "flex mb-4";
+    div.innerHTML = `
+    <div class="flex-shrink-0 mr-3">
+      <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      </div>
+    </div>
+    <div class="bg-gray-100 rounded-lg p-3 max-w-3xl w-full">
+      <span class="text-gray-800 flex gap-1"><p class="text-red-800">*</p>Would you like to upload an image of the issue?</span>
+      
+      <div class="mt-3 w-full max-w-md mx-auto">
+        <div class="flex justify-center p-4 border-2 border-gray-300 border-dashed rounded-md">
+          <div class="space-y-2 text-center w-full">
+            <svg class="mx-auto h-10 w-10 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <div class="flex justify-center text-sm text-gray-600 w-full">
+              <label for="file-upload" class="flex flex-col relative cursor-pointer rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none w-full p-2">
+                <span class="mb-1">Upload a file</span>
+                <div class="w-full overflow-hidden px-2">
+                  <input id="file-upload" name="image" type="file" class="sr-only">
+                  <span id="selected-file" class="text-center block w-full text-gray-500">No file selected</span>
+                </div>
+              </label>
+            </div>
+            <p class="text-xs text-gray-400">PNG, JPG, GIF up to 10MB</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+    chatContainer.appendChild(div);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    // File upload handling
+    const fileUpload = document.getElementById("file-upload");
+    const selectedFile = document.getElementById("selected-file");
+
+    fileUpload.addEventListener("change", function () {
+      if (this.files && this.files.length > 0) {
+        selectedFile.textContent = this.files[0].name;
+        collectedData.image = this.files[0];
+
+        // Transfer the file to the hidden form
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.name = "image";
+        fileInput.style.display = "none";
+        issueForm.appendChild(fileInput);
+
+        // Clone the FileList to the new input
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(fileUpload.files[0]);
+        fileInput.files = dataTransfer.files;
+
+        // Automatically proceed to the next step
+        nextQuestion();
+      }
+    });
+  }
+
+  // Move to next question based on current state
+  function nextQuestion() {
+    switch (conversationState) {
+      case "category":
+        addBotMessage("Great! Now, please provide a title for your issue.");
+        conversationState = "title";
+        break;
+      case "title":
+        addBotMessage("Thank you! Please describe the issue in detail.");
+        conversationState = "description";
+        break;
+      case "description":
+        addBotMessage(
+          "Where is this issue located? Please provide the address or location details."
+        );
+        conversationState = "location";
+        break;
+      case "location":
+        addFileUploadInterface();
+        conversationState = "image";
+        break;
+      case "image":
+        addBotMessage(
+          "Thank you for all the information! Here's a summary of your report:"
+        );
+        showSummary();
+        conversationState = "summary";
+
+        // Show the submit button and hide the send button
+        sendBtn.classList.add("hidden");
+        submitBtn.classList.remove("hidden");
+        break;
+    }
+  }
+
+  // Show summary of collected data
+  function showSummary() {
+    const hasImage = collectedData.image ? "Attached" : "None";
+
+    let summaryHTML = `
+      <div class="bg-purple-50 p-3 rounded-lg border border-purple-200 mt-3">
+        <p class="font-medium">Issue Summary:</p>
+        <ul class="mt-2">
+          <li><span class="font-medium">Category:</span> ${
+            categories.find((c) => c.value === collectedData.category)
+              ?.display || collectedData.category
+          }</li>
+          <li><span class="font-medium">Title:</span> ${
+            collectedData.title
+          }</li>
+          <li><span class="font-medium">Description:</span> ${
+            collectedData.description
+          }</li>
+          <li><span class="font-medium">Location:</span> ${
+            collectedData.location
+          }</li>
+          <li><span class="font-medium">Image:</span> ${hasImage}</li>
+        </ul>
+      </div>
+      <p class="mt-3">If everything looks good, please click the Submit Issue button below.</p>
+    `;
+
+    const lastBotMessage =
+      chatContainer.lastElementChild.querySelector(".bg-gray-100");
+    lastBotMessage.innerHTML += summaryHTML;
+  }
+
+  // Show warning message when user tries to type without selecting category
+  function showCategoryWarning() {
+    addBotMessage("Please select a category from the options above to continue.");
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  // Process user input
+  function processUserInput() {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    // Check if user has selected a category first
+    if (conversationState === "category" && !isCategorySelected) {
+      showCategoryWarning();
+      return;
+    }
+
+    addUserMessage(text);
+    userInput.value = "";
+
+    // Update collected data based on current state
+    switch (conversationState) {
+      case "title":
+        collectedData.title = text;
+        document.getElementById("hidden_title").value = text;
+        nextQuestion();
+        break;
+      case "description":
+        collectedData.description = text;
+        document.getElementById("hidden_description").value = text;
+        nextQuestion();
+        break;
+      case "location":
+        collectedData.location = text;
+        document.getElementById("hidden_location").value = text;
+        nextQuestion();
+        break;
+    }
+  }
+
+  // Event listeners
+  sendBtn.addEventListener("click", processUserInput);
+  userInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      processUserInput();
+    }
+  });
+
+  // Submit final form
+  submitBtn.addEventListener("click", function () {
+    // Submit the form
+    issueForm.submit();
+  });
+
+  // Initialize with the greeting message with typing effect
+  // Clear out the existing welcome message from HTML
+  const existingWelcomeMsg = chatContainer.querySelector(".flex.mb-4");
+  if (existingWelcomeMsg) {
+    chatContainer.removeChild(existingWelcomeMsg);
+  }
+
+  // Add new greeting message with typing effect
+  const welcomeDiv = document.createElement("div");
+  welcomeDiv.className = "flex mb-4";
+  welcomeDiv.innerHTML = `
+    <div class="flex-shrink-0 mr-3">
+      <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      </div>
+    </div>
+    <div class="bg-gray-100 rounded-lg p-3 max-w-3xl">
+      <p class="text-gray-800"></p>
+    </div>
+  `;
+  chatContainer.appendChild(welcomeDiv);
+  
+  // Get username from the request context or use empty string if not available
+  const username = document.querySelector('#chat-container').getAttribute('data-username') || '';
+  const welcomeMessage = `Hello ${username}! I'm your community assistant. I'm here to help you report an issue. Let's get started! What type of issue would you like to report?`;
+  addTypingEffect(welcomeDiv.querySelector(".text-gray-800"), welcomeMessage);
+});
+</script>
 {% endblock %}
