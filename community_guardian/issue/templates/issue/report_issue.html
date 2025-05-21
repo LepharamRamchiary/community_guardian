@@ -98,22 +98,5 @@
     {{ message }}
   {% endfor %}
 </div>
-<script>
-  // Better message handling with fade animation
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-      const popup = document.getElementById('popup-message');
-      if (popup) {
-        popup.style.opacity = '0';
-        popup.style.transform = 'translateY(-20px)';
-        popup.style.transition = 'opacity 0.5s, transform 0.5s';
-        
-        setTimeout(() => {
-          window.location.href = "{% url 'my_issue' %}";
-        }, 500);
-      }
-    }, 2500);
-  });
-</script>
 {% endif %}
 {% endblock %}

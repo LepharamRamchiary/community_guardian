@@ -19,7 +19,7 @@ def report_issue(request):
             issue.user = request.user
             issue.save()
             messages.success(request, "Issue created successfully!")
-            return redirect('report_issue')
+            return redirect('my_issue')
     else:
         form = IssueForm()
     return render(request, 'issue/report_issue.html', {'form': form})
