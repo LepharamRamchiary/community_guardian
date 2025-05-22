@@ -23,6 +23,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.leanding, name='leanding'),
+    path('about-us/', views.about_us, name='about_us'),
 
     #Hot reloading
     path("__reload__/", include("django_browser_reload.urls")),

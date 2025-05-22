@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Main Content with proper spacing for fixed navbar -->
+<main id="main-content" class="pt-14 sm:pt-10">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white py-12 lg:py-20">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 lg:mb-6">About Community Guardian</h1>
+      <p class="text-lg md:text-xl lg:text-2xl mb-6 lg:mb-8 max-w-4xl mx-auto opacity-90 px-4">
+        Empowering communities to create positive change through transparent issue reporting and collaborative problem-solving.
+      </p>
+      <div class="flex justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 lg:h-16 lg:w-16 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Mission Section -->
+  <section class="py-12 lg:py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-8 lg:mb-12">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 lg:mb-4">Our Mission</h2>
+        <p class="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+          We believe that every community deserves a voice and every issue deserves attention.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+        <div class="text-center p-4 lg:p-6">
+          <div class="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center mx-auto mb-3 lg:mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 lg:h-8 lg:w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg lg:text-xl font-semibold mb-2 text-gray-800">Community First</h3>
+          <p class="text-sm lg:text-base text-gray-600 leading-relaxed">
+            We put communities at the center of everything we do, ensuring their voices are heard and their concerns are addressed.
+          </p>
+        </div>
+        
+        <div class="text-center p-4 lg:p-6">
+          <div class="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center mx-auto mb-3 lg:mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 lg:h-8 lg:w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="text-lg lg:text-xl font-semibold mb-2 text-gray-800">Transparency</h3>
+          <p class="text-sm lg:text-base text-gray-600 leading-relaxed">
+            We believe in open, transparent processes that build trust between communities and service providers.
+          </p>
+        </div>
+        
+        <div class="text-center p-4 lg:p-6">
+          <div class="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center mx-auto mb-3 lg:mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 lg:h-8 lg:w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-lg lg:text-xl font-semibold mb-2 text-gray-800">Quick Action</h3>
+          <p class="text-sm lg:text-base text-gray-600 leading-relaxed">
+            We facilitate rapid response to community issues, ensuring problems are resolved efficiently and effectively.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story Section -->
+  <section class="py-12 lg:py-16">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 lg:mb-8 text-gray-800">Our Story</h2>
+        <div class="space-y-4 lg:space-y-6 text-gray-600">
+          <p class="text-base lg:text-lg leading-relaxed text-justify">
+            Community Guardian was born from a simple observation: too many community issues go unnoticed or unaddressed because there's no easy way for residents to report them and track their resolution. We saw neighbors frustrated by potholes that never got fixed, streetlights that stayed broken for months, and community concerns that seemed to disappear into bureaucratic black holes.
+          </p>
+          <p class="text-base lg:text-lg leading-relaxed text-justify">
+           I created Community Guardian as a learning project to better understand how to build platforms that simplify issue reporting and promote transparency in their resolution.
+          </p>
+          <p class="text-base lg:text-lg leading-relaxed text-justify">
+            Today, I am provided with the chance to serve communities across the region, helping thousands of residents make their voices heard and create lasting positive change in neighborhoods everywhere.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="py-12 lg:py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-8 lg:mb-12">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 lg:mb-4">Meet Our Team</h2>
+        <p class="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+          Passionate individuals working to make communities better, one issue at a time.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-6 lg:gap-8 max-w-sm mx-auto">
+        <!-- Team Member 1 -->
+        {% comment %} <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+          <div class="h-56 lg:h-64 overflow-hidden">
+            <img src="{% static 'images/team-member-1.jpg' %}" alt="Sarah Johnson - CEO & Founder" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+          </div>
+          <div class="p-4 lg:p-6">
+            <h3 class="text-lg lg:text-xl font-semibold mb-1 lg:mb-2 text-gray-800">Sarah Johnson</h3>
+            <p class="text-purple-600 mb-2 lg:mb-3 font-medium">CEO & Founder</p>
+            <p class="text-gray-600 text-sm lg:text-base leading-relaxed">
+              Former city planner with 10+ years of experience in community development and civic engagement.
+            </p>
+          </div>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+          <div class="h-56 lg:h-64 overflow-hidden">
+            <img src="{% static 'images/team-member-2.jpg' %}" alt="Marcus Chen - CTO" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+          </div>
+          <div class="p-4 lg:p-6">
+            <h3 class="text-lg lg:text-xl font-semibold mb-1 lg:mb-2 text-gray-800">Marcus Chen</h3>
+            <p class="text-purple-600 mb-2 lg:mb-3 font-medium">Chief Technology Officer</p>
+            <p class="text-gray-600 text-sm lg:text-base leading-relaxed">
+              Software architect passionate about using technology to solve real-world community problems.
+            </p>
+          </div>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+          <div class="h-56 lg:h-64 overflow-hidden">
+            <img src="{% static 'images/team-member-3.jpg' %}" alt="Emily Rodriguez - Community Outreach Director" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+          </div>
+          <div class="p-4 lg:p-6">
+            <h3 class="text-lg lg:text-xl font-semibold mb-1 lg:mb-2 text-gray-800">Emily Rodriguez</h3>
+            <p class="text-purple-600 mb-2 lg:mb-3 font-medium">Community Outreach Director</p>
+            <p class="text-gray-600 text-sm lg:text-base leading-relaxed">
+              Community organizer dedicated to building bridges between residents and local government.
+            </p>
+          </div>
+        </div> {% endcomment %}
+
+        <!-- Team Member 4 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+          <div class="h-56 lg:h-64 overflow-hidden">
+            <img src="{% static 'images/en.png' %}" alt="Lepharam Ramchiary - Software Engineer" class="w-full h-full  object-fill hover:scale-110 transition-transform duration-300">
+          </div>
+          <div class="p-4 lg:p-6">
+            <h3 class="text-lg lg:text-xl font-semibold mb-1 lg:mb-2 text-gray-800">Lepharam Ramchiary</h3>
+            <p class="text-purple-600 mb-2 lg:mb-3 font-medium">Software Engineer</p>
+            <p class="text-gray-600 text-sm lg:text-base leading-relaxed">
+              Full-stack developer focused on creating user-friendly platforms.
+            </p>
+          </div>
+        </div>
+
+        {% comment %} <!-- Team Member 5 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+          <div class="h-56 lg:h-64 overflow-hidden">
+            <img src="{% static 'images/team-member-5.jpg' %}" alt="Lisa Thompson - UX Designer" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+          </div>
+          <div class="p-4 lg:p-6">
+            <h3 class="text-lg lg:text-xl font-semibold mb-1 lg:mb-2 text-gray-800">Lisa Thompson</h3>
+            <p class="text-purple-600 mb-2 lg:mb-3 font-medium">UX Designer</p>
+            <p class="text-gray-600 text-sm lg:text-base leading-relaxed">
+              Design expert committed to making technology accessible and intuitive for all community members.
+            </p>
+          </div>
+        </div>
+
+        <!-- Team Member 6 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+          <div class="h-56 lg:h-64 overflow-hidden">
+            <img src="{% static 'images/team-member-6.jpg' %}" alt="James Wilson - Operations Manager" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
+          </div>
+          <div class="p-4 lg:p-6">
+            <h3 class="text-lg lg:text-xl font-semibold mb-1 lg:mb-2 text-gray-800">James Wilson</h3>
+            <p class="text-purple-600 mb-2 lg:mb-3 font-medium">Operations Manager</p>
+            <p class="text-gray-600 text-sm lg:text-base leading-relaxed">
+              Operations specialist ensuring smooth coordination between communities and service providers.
+            </p>
+          </div>
+        </div> {% endcomment %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="py-12 lg:py-16">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-8 lg:mb-12">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 lg:mb-4">Our Values</h2>
+        <p class="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+          These principles guide everything we do and every decision we make.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+        <div class="flex items-start space-x-3 lg:space-x-4 p-4 lg:p-6 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+          <div class="flex-shrink-0">
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 lg:h-6 lg:w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg lg:text-xl font-semibold mb-2 text-gray-800">Empathy</h3>
+            <p class="text-sm lg:text-base text-gray-600 leading-relaxed">
+              We understand that behind every issue report is a person who cares about their community and wants to see positive change.
+            </p>
+          </div>
+        </div>
+        
+        <div class="flex items-start space-x-3 lg:space-x-4 p-4 lg:p-6 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+          <div class="flex-shrink-0">
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 lg:h-6 lg:w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg lg:text-xl font-semibold mb-2 text-gray-800">Integrity</h3>
+            <p class="text-sm lg:text-base text-gray-600 leading-relaxed">
+              We maintain the highest standards of honesty and transparency in all our interactions and processes.
+            </p>
+          </div>
+        </div>
+        
+        <div class="flex items-start space-x-3 lg:space-x-4 p-4 lg:p-6 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+          <div class="flex-shrink-0">
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 lg:h-6 lg:w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg lg:text-xl font-semibold mb-2 text-gray-800">Innovation</h3>
+            <p class="text-sm lg:text-base text-gray-600 leading-relaxed">
+              We continuously seek new and better ways to serve communities and solve problems through technology.
+            </p>
+          </div>
+        </div>
+        
+        <div class="flex items-start space-x-3 lg:space-x-4 p-4 lg:p-6 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+          <div class="flex-shrink-0">
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 lg:h-6 lg:w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg lg:text-xl font-semibold mb-2 text-gray-800">Collaboration</h3>
+            <p class="text-sm lg:text-base text-gray-600 leading-relaxed">
+              We believe that the best solutions come from working together with communities, government, and service providers.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Section -->
+  <section class="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 text-white py-12 lg:py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 lg:mb-6">Join Our Mission</h2>
+      <p class="text-lg lg:text-xl mb-6 lg:mb-8 max-w-2xl mx-auto opacity-90 px-4">
+        Ready to make a difference in your community? Start reporting issues and help us build stronger, more responsive neighborhoods.
+      </p>
+      <a href="{% url 'leanding' %}" class="inline-block bg-white text-purple-600 px-6 lg:px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+        Get Started Today
+      </a>
+    </div>
+  </section>
+</main>
+{% endblock %}
