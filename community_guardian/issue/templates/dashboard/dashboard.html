@@ -126,6 +126,9 @@
                 {% elif request.resolver_match.url_name == 'chat' %}
                   <li><span>&gt;</span></li>
                   <li class="text-gray-600">Messages</li>
+                {% elif request.resolver_match.url_name == 'profile' %}
+                  <li><span>&gt;</span></li>
+                  <li class="text-gray-600">Profile</li>
                 {% elif request.resolver_match.url_name == 'my_issue' %}
                   <li><span>&gt;</span></li>
                   <li class="text-gray-600">My Issues</li>
@@ -172,8 +175,8 @@
             
             <!-- Dropdown menu -->
             <div id="userDropdown" class="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20 hidden">
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+              <a href="{% url 'profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+              {% comment %} <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a> {% endcomment %}
               <div class="border-t border-gray-100"></div>
               <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
             </div>

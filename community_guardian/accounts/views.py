@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm
 from django.contrib import messages
 import logging
@@ -58,3 +59,14 @@ def logout_view(request):
         # Log any unexpected errors
         logger.error(f"Error in logout_view: {str(e)}")
         return redirect('leanding')
+
+@login_required
+def profile_view(request):
+    # Example: Add additional context data
+    # context = {
+    #     'total_issues': 12,  # Replace with actual count from your models
+    #     'resolved_issues': 8,
+    #     'pending_issues': 4,
+    #     'community_points': 25,
+    # }
+    return render(request, 'profile/profile.html')
