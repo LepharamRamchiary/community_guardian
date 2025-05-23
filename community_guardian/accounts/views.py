@@ -2,9 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm
+from .forms import RegisterForm, ProfileEditForm
 from django.contrib import messages
+from issue.models import Issue
+from django.http import JsonResponse
+
 import logging
+
 
 # Set up logger
 logger = logging.getLogger('django')
@@ -69,4 +73,43 @@ def profile_view(request):
     #     'pending_issues': 4,
     #     'community_points': 25,
     # }
-    return render(request, 'profile/profile.html')
+    user = request.user
+
+    user_issues = Issue.objects.filter(user=user)   
+
+    total_issues = user_issues.count()
+    pending_issues = user_issues.filter(status='Pending').count()   
+    resolved_issues = user_issues.filter(status='Resolved').count()
+    processing_issues = user_issues.filter(status='Processing').count()
+    rejected_issues = user_issues.filter(status='Rejected').count()
+
+    community_points = (resolved_issues * 3) + (total_issues * 1)
+
+    edit_form = ProfileEditForm(instance=user)
+
+    context = {
+        'total_issues': total_issues,
+        'resolved_issues': resolved_issues,
+        'pending_issues': pending_issues,
+        'processing_issues': processing_issues,
+        'rejected_issues': rejected_issues,
+        'community_points': community_points,
+        'edit_form': edit_form,
+    }
+
+    return render(request, 'profile/profile.html', context)
+
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
